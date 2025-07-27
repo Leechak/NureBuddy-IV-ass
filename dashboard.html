@@ -635,6 +635,104 @@
       border: 3px solid rgba(14, 165, 233, 0.2);
     }
 
+    /* กริดสถิติภาพรวม */
+    .iv-overview-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin: 25px 0;
+      padding: 20px 0;
+      border-bottom: 2px solid rgba(14, 165, 233, 0.1);
+    }
+
+    .overview-stat-card {
+      background: white;
+      border-radius: 16px;
+      padding: 25px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      border: 3px solid;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .overview-stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #0ea5e9, #3b82f6);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .overview-stat-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .overview-stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .overview-stat-card.normal {
+      border-color: #22c55e;
+      background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    }
+
+    .overview-stat-card.warning {
+      border-color: #f59e0b;
+      background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    }
+
+    .overview-stat-card.critical {
+      border-color: #ef4444;
+      background: linear-gradient(135deg, #fef2f2, #fee2e2);
+      animation: criticalPulse 3s ease-in-out infinite;
+    }
+
+    .overview-stat-card.total {
+      border-color: #0ea5e9;
+      background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+    }
+
+    .stat-icon {
+      font-size: 36px;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.8);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-content {
+      flex: 1;
+    }
+
+    .stat-number {
+      font-size: 32px;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 5px;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: #64748b;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
     .summary-controls {
       display: flex;
       gap: 12px;
@@ -664,20 +762,22 @@
 
     .iv-summary-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-      margin-top: 25px;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 25px;
+      margin-top: 30px;
     }
 
     .iv-summary-card {
       background: white;
-      border-radius: 16px;
-      padding: 25px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      border: 2px solid;
-      transition: all 0.3s ease;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+      border: 3px solid;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
       overflow: hidden;
+      cursor: pointer;
+      transform-style: preserve-3d;
     }
 
     .iv-summary-card::before {
@@ -686,14 +786,41 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, #0ea5e9, #3b82f6);
+      height: 6px;
+      background: linear-gradient(90deg, #0ea5e9, #3b82f6, #8b5cf6);
       transform: scaleX(0);
-      transition: transform 0.3s ease;
+      transition: transform 0.4s ease;
+    }
+
+    .iv-summary-card::after {
+      content: '👁️ ดูรายละเอียด';
+      position: absolute;
+      bottom: 15px;
+      right: 20px;
+      background: rgba(14, 165, 233, 0.9);
+      color: white;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+      pointer-events: none;
     }
 
     .iv-summary-card:hover::before {
       transform: scaleX(1);
+    }
+
+    .iv-summary-card:hover::after {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .iv-summary-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
     }
 
     .iv-summary-card.normal {
@@ -944,6 +1071,164 @@
       50% { 
         box-shadow: 0 8px 25px rgba(239, 68, 68, 0.6);
       }
+    }
+
+    /* Progress Bar สำหรับปริมาณน้ำเกลือ */
+    .iv-volume-progress {
+      margin: 20px 0;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 12px;
+      border: 2px solid rgba(14, 165, 233, 0.2);
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .progress-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    .progress-value {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0ea5e9;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #22c55e, #16a34a);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+      position: relative;
+    }
+
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .progress-time {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #64748b;
+      text-align: center;
+    }
+
+    /* Flow Comparison Grid */
+    .iv-flow-comparison {
+      margin: 20px 0;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 12px;
+      border: 2px solid rgba(14, 165, 233, 0.2);
+    }
+
+    .flow-comparison-header {
+      font-size: 14px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .flow-comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 15px;
+    }
+
+    .flow-item {
+      text-align: center;
+      padding: 12px;
+      border-radius: 10px;
+      border: 2px solid;
+      background: white;
+      transition: all 0.3s ease;
+    }
+
+    .flow-item.ordered {
+      border-color: #0ea5e9;
+      background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+    }
+
+    .flow-item.measured {
+      border-color: #f59e0b;
+      background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    }
+
+    .flow-item.difference.normal {
+      border-color: #22c55e;
+      background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    }
+
+    .flow-item.difference.warning {
+      border-color: #f59e0b;
+      background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    }
+
+    .flow-item.difference.critical {
+      border-color: #ef4444;
+      background: linear-gradient(135deg, #fef2f2, #fee2e2);
+      animation: pulse 2s infinite;
+    }
+
+    .flow-label {
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .flow-value {
+      font-size: 18px;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 2px;
+    }
+
+    .flow-unit {
+      font-size: 10px;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .iv-finish-time {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 12px;
+      color: #64748b;
+      padding: 8px;
+      background: rgba(14, 165, 233, 0.1);
+      border-radius: 8px;
+      border: 1px solid rgba(14, 165, 233, 0.2);
     }
 
     .summary-header {
@@ -3067,6 +3352,58 @@ align-items: center;
       }
     }
 
+    /* Mockup Float Button */
+    .mockup-float-button {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+      transition: all 0.3s ease;
+      z-index: 9999;
+      border: 3px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      animation: floatPulse 3s ease-in-out infinite;
+    }
+
+    .mockup-float-button:hover {
+      transform: scale(1.1) translateY(-5px);
+      box-shadow: 0 15px 40px rgba(139, 92, 246, 0.6);
+      background: linear-gradient(135deg, #7c3aed, #6d28d9);
+    }
+
+    .mockup-float-button:active {
+      transform: scale(0.95);
+    }
+
+    @keyframes floatPulse {
+      0%, 100% {
+        box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4), 0 0 0 0 rgba(139, 92, 246, 0.7);
+      }
+      50% {
+        box-shadow: 0 12px 35px rgba(139, 92, 246, 0.6), 0 0 0 10px rgba(139, 92, 246, 0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .mockup-float-button {
+        width: 60px;
+        height: 60px;
+        font-size: 28px;
+        bottom: 20px;
+        right: 20px;
+      }
+    }
+
     /* Beds Overview Section */
     .beds-overview-section {
       background: white;
@@ -3195,16 +3532,71 @@ align-items: center;
     <button class="admin-btn secondary" data-action="logout">🚪 ออก</button>
   </div>
 
-  <!-- ระบบสรุปน้ำเกลือสำคัญ -->
+  <!-- ปุ่มลัดหลัก - ย้ายขึ้นด้านบน -->
+  <div class="quick-actions">
+    <div class="action-card primary-action" data-action="quick-add">
+      <div class="action-icon">🏥</div>
+      <div class="action-title">เพิ่มผู้ป่วยใหม่</div>
+      <div class="action-desc">เริ่มต้นการดูแลผู้ป่วยใหม่ เซ็ตอัพเตียงพร้อมใช้งาน</div>
+    </div>
+
+    <div class="action-card" onclick="openAdvancedIVCalculator()">
+      <div class="action-icon">🧮</div>
+      <div class="action-title">เครื่องคำนวณน้ำเกลืออัจฉริยะ</div>
+      <div class="action-desc">คำนวณและตรวจสอบความปลอดภัยพร้อมการแจ้งเตือน</div>
+    </div>
+
+    <div class="action-card" data-action="io-entry">
+      <div class="action-icon">💧</div>
+      <div class="action-title">บันทึก I/O อย่างรวดเร็ว</div>
+      <div class="action-desc">บันทึกสารน้ำเข้า-ออกอย่างรวดเร็วและแม่นยำ</div>
+    </div>
+  </div>
+
+  <!-- ระบบสรุปน้ำเกลือแบบเรียลไทม์ - ปรับปรุงใหม่ -->
   <div class="iv-summary-section">
     <div class="section-header">
       <h2>🧮 สรุประบบน้ำเกลือแบบเรียลไทม์</h2>
       <div class="summary-controls">
         <button class="summary-btn" onclick="refreshIVSummary()">🔄 รีเฟรช</button>
         <button class="summary-btn" onclick="showIVAlertsModal()">🚨 แจ้งเตือน <span id="activeAlertsCount">0</span></button>
+        <button class="summary-btn" onclick="openDetailedAnalytics()">📊 วิเคราะห์ละเอียด</button>
       </div>
     </div>
     
+    <!-- สถิติภาพรวมแบบกริด -->
+    <div class="iv-overview-stats">
+      <div class="overview-stat-card normal">
+        <div class="stat-icon">✅</div>
+        <div class="stat-content">
+          <div class="stat-number" id="normalBedsCount">0</div>
+          <div class="stat-label">เตียงปกติ</div>
+        </div>
+      </div>
+      <div class="overview-stat-card warning">
+        <div class="stat-icon">⚠️</div>
+        <div class="stat-content">
+          <div class="stat-number" id="warningBedsCount">0</div>
+          <div class="stat-label">ต้องติดตาม</div>
+        </div>
+      </div>
+      <div class="overview-stat-card critical">
+        <div class="stat-icon">🚨</div>
+        <div class="stat-content">
+          <div class="stat-number" id="criticalBedsCount">0</div>
+          <div class="stat-label">ฉุกเฉิน</div>
+        </div>
+      </div>
+      <div class="overview-stat-card total">
+        <div class="stat-icon">🛏️</div>
+        <div class="stat-content">
+          <div class="stat-number" id="totalActiveBedsCount">0</div>
+          <div class="stat-label">เตียงที่ใช้งาน</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- กริดข้อมูลน้ำเกลือแต่ละเตียง -->
     <div class="iv-summary-grid" id="ivSummaryGrid">
       <!-- จะถูกโหลดแบบไดนามิก -->
     </div>
@@ -3223,26 +3615,6 @@ align-items: center;
     
     <div class="quick-alerts-grid" id="quickAlertsGrid">
       <!-- จะถูกโหลดแบบไดนามิก -->
-    </div>
-  </div>
-
-  <div class="quick-actions">
-    <div class="action-card primary-action" data-action="quick-add">
-      <div class="action-icon">🏥</div>
-      <div class="action-title">เพิ่มผู้ป่วยใหม่</div>
-      <div class="action-desc">เริ่มต้นการดูแลผู้ป่วยใหม่ เซ็ตอัพเตียงพร้อมใช้งาน</div>
-    </div>
-
-    <div class="action-card" data-action="io-entry">
-      <div class="action-icon">💧</div>
-      <div class="action-title">บันทึก I/O อย่างรวดเร็ว</div>
-      <div class="action-desc">บันทึกสารน้ำเข้า-ออกอย่างรวดเร็วและแม่นยำ</div>
-    </div>
-
-    <div class="action-card" onclick="openAdvancedIVCalculator()">
-      <div class="action-icon">🧮</div>
-      <div class="action-title">เครื่องคำนวณน้ำเกลืออัจฉริยะ</div>
-      <div class="action-desc">คำนวณและตรวจสอบความปลอดภัยพร้อมการแจ้งเตือน</div>
     </div>
   </div>
 
@@ -3556,6 +3928,98 @@ align-items: center;
       }
     };
 
+    // ฟังก์ชันเปิดการวิเคราะห์ละเอียด
+    window.openDetailedAnalytics = function() {
+      // รวบรวมข้อมูลจากทุกเตียงเพื่อแสดงการวิเคราะห์
+      const analyticsData = [];
+      
+      for (let i = 1; i <= window.MAX_BEDS; i++) {
+        const bedData = window.dataManager?.getPatient(i);
+        if (bedData && bedData.patient_id && window.dashboardManager) {
+          const summaryData = window.dashboardManager.calculateIVSummary(i, bedData);
+          const ioSummary = window.dataManager.getIOSummary(i);
+          
+          analyticsData.push({
+            bedId: i,
+            patientId: bedData.patient_id,
+            medication: bedData.medication,
+            status: summaryData.status,
+            accuracy: 100 - summaryData.percentage,
+            timeRemaining: summaryData.timeRemaining,
+            ioBalance: ioSummary ? ioSummary.balance : 0,
+            lastUpdated: bedData.lastUpdated
+          });
+        }
+      }
+
+      // แสดง Modal การวิเคราะห์
+      showAnalyticsModal(analyticsData);
+    };
+
+    function showAnalyticsModal(data) {
+      const modal = document.createElement('div');
+      modal.className = 'modal';
+      modal.style.display = 'flex';
+      
+      modal.innerHTML = `
+        <div class="modal-content" style="max-width: 1000px; max-height: 90vh; overflow-y: auto;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid #f1f5f9;">
+            <h3 style="margin: 0; color: #1e293b; font-size: 24px;">📊 การวิเคราะห์ข้อมูลละเอียด</h3>
+            <button onclick="this.closest('.modal').remove()" style="background: #ef4444; color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer;">✕ ปิด</button>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            ${data.map(bed => `
+              <div style="background: white; border-radius: 15px; padding: 20px; border: 2px solid ${getStatusColor(bed.status)}; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                  <h4 style="margin: 0; color: #1e293b;">🛏️ เตียง ${bed.bedId}</h4>
+                  <span style="background: ${getStatusColor(bed.status)}; color: white; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 600;">
+                    ${getStatusText(bed.status)}
+                  </span>
+                </div>
+                <div style="margin-bottom: 15px;">
+                  <div style="font-size: 14px; color: #64748b; margin-bottom: 8px;"><strong>👤 ผู้ป่วย:</strong> ${bed.patientId}</div>
+                  <div style="font-size: 14px; color: #64748b; margin-bottom: 8px;"><strong>💊 ยา:</strong> ${bed.medication}</div>
+                  <div style="font-size: 14px; color: #64748b; margin-bottom: 8px;"><strong>🎯 ความแม่นยำ:</strong> ${bed.accuracy.toFixed(1)}%</div>
+                  <div style="font-size: 14px; color: #64748b; margin-bottom: 8px;"><strong>⏰ เวลาคงเหลือ:</strong> ${bed.timeRemaining.toFixed(1)} ชม.</div>
+                  <div style="font-size: 14px; color: #64748b; margin-bottom: 8px;"><strong>💧 I/O Balance:</strong> ${bed.ioBalance > 0 ? '+' : ''}${bed.ioBalance} mL</div>
+                </div>
+                <button onclick="window.location.href='chart.html?bed=${bed.bedId}'" style="width: 100%; background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                  👁️ ดูรายละเอียดใน Chart
+                </button>
+              </div>
+            `).join('')}
+          </div>
+          
+          ${data.length === 0 ? `
+            <div style="text-align: center; padding: 40px; color: #64748b;">
+              <div style="font-size: 48px; margin-bottom: 15px;">📊</div>
+              <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">ไม่มีข้อมูลที่จะวิเคราะห์</div>
+              <div style="font-size: 14px;">เพิ่มผู้ป่วยเพื่อดูการวิเคราะห์</div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+    }
+
+    function getStatusColor(status) {
+      return {
+        normal: '#22c55e',
+        warning: '#f59e0b', 
+        critical: '#ef4444'
+      }[status] || '#64748b';
+    }
+
+    function getStatusText(status) {
+      return {
+        normal: 'ปกติ',
+        warning: 'เตือน',
+        critical: 'ฉุกเฉิน'
+      }[status] || 'ไม่ทราบ';
+    }
+
     // ฟังก์ชันปิด Modal การแจ้งเตือน
     window.closeIVAlertsModal = function() {
       const modal = document.getElementById('ivAlertsModal');
@@ -3721,12 +4185,43 @@ align-items: center;
     });
   </script>
 
-  <!-- Patient Modal System -->
-  <script src="System/patient-modal.js"></script>
+  <!-- Mockup Float Button for 9999 users -->
+  <div id="mockupFloatButton" class="mockup-float-button" style="display: none;" onclick="MockupSystem.openPopup()">
+    🎭
+  </div>
 
-  <!-- Main Application Module -->
-  <script type="module" src="js/dashboard-main.js"></script>
-  <script type="module" src="js/dashboard-events.js"></script>
-  <script type="module" src="System/iv-calculator.js"></script>
+  <!-- Load dependencies in correct order -->
+  <script src="System/data-manager.js"></script>
+  <script src="System/patient-modal.js"></script>
+  <script src="System/iv-calculator.js"></script>
+  <script src="System/mockup.js"></script>
+  
+  <!-- Main Application -->
+  <script src="js/dashboard-main.js"></script>
+  <script src="js/dashboard-events.js"></script>
+  
+  <!-- Initialize after DOM loads -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.DashboardEventHandlers && window.DashboardManager) {
+        // Initialize dashboard events
+        const dashboardManager = new window.DashboardManager();
+        const dashboardEvents = new window.DashboardEventHandlers(dashboardManager);
+        
+        // Make globally available
+        window.dashboardManager = dashboardManager;
+        window.dashboardEvents = dashboardEvents;
+      }
+
+      // Show mockup float button for mockup users
+      const currentUser = JSON.parse(sessionStorage.getItem('currentUser') || 'null');
+      if (currentUser && currentUser.role === 'mockup') {
+        const mockupButton = document.getElementById('mockupFloatButton');
+        if (mockupButton) {
+          mockupButton.style.display = 'flex';
+        }
+      }
+    });
+  </script>
 </body>
 </html>

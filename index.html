@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -22,9 +21,11 @@
       min-height: 100vh;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       position: relative;
-      overflow: hidden;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 20px 0;
     }
 
     body::before {
@@ -453,6 +454,7 @@
 
     .role-admin { background: #ef4444; }
     .role-nurse { background: #059669; }
+    .role-mockup { background: #8b5cf6; }
 
     .developer-info {
       margin-top: 25px;
@@ -708,11 +710,15 @@
         <h4>🔐 บทบาทและสิทธิ์ในระบบ</h4>
         <div class="role-item">
           <span class="role-badge role-admin">ADMIN</span>
-          <span> จัดการระบบทั้งหมด อนุมัติสมาชิก</span>
+          <span>จัดการระบบทั้งหมด จัดการรหัสผ่าน อนุมัติสมาชิก</span>
         </div>
         <div class="role-item">
           <span class="role-badge role-nurse">NURSE</span>
           <span>เพิ่มเตียง ปิดเตียง บันทึกข้อมูลผู้ป่วย</span>
+        </div>
+        <div class="role-item">
+          <span class="role-badge role-mockup">MOCKUP</span>
+          <span>จำลองข้อมูลน้ำเกลือ ทดสอบระบบ</span>
         </div>
       </div>
 
@@ -739,8 +745,9 @@
 
       <div class="server-info">
         <h5>💡 วิธีใช้งาน</h5>
-        <p><strong>แอดมิน:</strong> ใช้รหัส 0000 เพื่อเข้าระบบแบบด่วน</p>
+        <p><strong>แอดมิน:</strong> ใช้รหัส 0000 - จัดการระบบและรหัสผ่าน</p>
         <p><strong>พยาบาล:</strong> สมัครสมาชิกใหม่ รอแอดมินอนุมัติ</p>
+        <p><strong>Mock-up:</strong> ใช้รหัส 9999 - จำลองข้อมูลน้ำเกลือ</p>
         <p><strong>การใช้งานจากหลายเครื่อง:</strong> รองรับหลายอุปกรณ์ผ่าน NurseBuddy</p>
       </div>
 
@@ -758,18 +765,28 @@
       password: "0000", 
       role: "admin", 
       fullname: "ผู้ดูแลระบบหลัก",
-      permissions: ["all"],
+      permissions: ["all", "user_management", "system_admin"],
+      isDefault: true
+    };
+
+    const DEFAULT_MOCKUP = {
+      username: "9999",
+      password: "9999",
+      role: "mockup",
+      fullname: "ระบบจำลองข้อมูล",
+      permissions: ["mockup_control", "data_simulation"],
       isDefault: true
     };
 
     const DEFAULT_USERS = [
       DEFAULT_ADMIN,
+      DEFAULT_MOCKUP,
       { 
         username: "nurse01", 
         password: "nurse123", 
         role: "nurse", 
         fullname: "พยาบาลศรีวรรณ",
-        permissions: ["bed_management", "patient_care"],
+        permissions: ["bed_management", "patient_care", "data_entry"],
         approved: true
       },
       { 
@@ -777,7 +794,7 @@
         password: "nurse456", 
         role: "nurse", 
         fullname: "พยาบาลกานดา",
-        permissions: ["bed_management", "patient_care"],
+        permissions: ["bed_management", "patient_care", "data_entry"],
         approved: true
       }
     ];
@@ -808,15 +825,15 @@
 
     function switchTab(tab) {
       currentTab = tab;
-      
+
       // อัพเดท tabs
       document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
       document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
-      
+
       // อัพเดท forms
       document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
       document.getElementById(tab === 'login' ? 'loginForm' : 'registerForm').classList.add('active');
-      
+
       // ล้างข้อความ
       clearMessages();
     }
@@ -824,7 +841,7 @@
     function togglePassword(inputId) {
       const input = document.getElementById(inputId);
       const icon = input.nextElementSibling.querySelector('span');
-      
+
       if (input.type === 'password') {
         input.type = 'text';
         icon.textContent = '🙈';
@@ -836,7 +853,7 @@
 
     function showMessage(message, type = 'error') {
       clearMessages();
-      
+
       const messageEl = document.getElementById(type + 'Msg');
       messageEl.textContent = message;
       messageEl.style.display = 'block';
@@ -858,7 +875,7 @@
       const loginBtn = document.getElementById('loginBtn');
 
       overlay.style.display = show ? 'flex' : 'none';
-      
+
       if (loginBtn) {
         loginBtn.disabled = show;
         loginBtn.textContent = show ? '⏳ กำลังเข้าสู่ระบบ...' : '🔓 เข้าสู่ระบบ';
@@ -870,7 +887,7 @@
       if (remembered) {
         document.getElementById("username").value = remembered.username;
         document.getElementById("rememberMe").checked = true;
-        
+
         // แสดงช่องรหัสผ่านถ้าไม่ใช่ 0000
         if (remembered.username !== "0000") {
           document.getElementById("passwordGroup").style.display = "block";
@@ -897,8 +914,8 @@
       const username = e.target.value.trim();
       const passwordGroup = document.getElementById("passwordGroup");
       const passwordInput = document.getElementById("password");
-      
-      if (username === "0000") {
+
+      if (username === "0000" || username === "9999") {
         passwordGroup.style.display = "none";
         passwordInput.removeAttribute("required");
       } else {
@@ -919,9 +936,14 @@
         return false;
       }
 
-      // ตรวจสอบกรณีพิเศษสำหรับแอดมิน
+      // ตรวจสอบกรณีพิเศษสำหรับแอดมินและ mock-up
       if (username === "0000") {
         loginAdmin();
+        return false;
+      }
+
+      if (username === "9999") {
+        loginMockup();
         return false;
       }
 
@@ -981,7 +1003,7 @@
 
     function loginAdmin() {
       showLoading(true);
-      
+
       setTimeout(() => {
         const adminSession = {
           ...DEFAULT_ADMIN,
@@ -999,6 +1021,27 @@
         }, 1000);
       }, 800);
     }
+
+    function loginMockup() {
+    showLoading(true);
+
+    setTimeout(() => {
+      const mockupSession = {
+        ...DEFAULT_MOCKUP,
+        loginTime: new Date().toISOString(),
+        sessionId: Date.now().toString()
+      };
+
+      sessionStorage.setItem("currentUser", JSON.stringify(mockupSession));
+      saveRememberedData("9999");
+
+      showMessage(`เข้าสู่ระบบ Mock-up สำเร็จ ยินดีต้อนรับ ${DEFAULT_MOCKUP.fullname}`, 'success');
+
+      setTimeout(() => {
+        window.location.href = "dashboard.html";
+      }, 1000);
+    }, 800);
+  }
 
     function register(event) {
       event.preventDefault();
@@ -1081,6 +1124,23 @@
       if (currentUser) {
         // ถ้าเข้าสู่ระบบแล้ว ให้ไปหน้า dashboard ทันที
         window.location.href = 'dashboard.html';
+      }
+    }
+
+    // ฟังก์ชันเปิด Mockup Popup
+    function openMockupPopup() {
+      // โหลด mockup system
+      if (!window.MockupSystem) {
+        const script = document.createElement('script');
+        script.src = 'System/mockup.js';
+        script.onload = () => {
+          if (window.MockupSystem) {
+            window.MockupSystem.openPopup();
+          }
+        };
+        document.head.appendChild(script);
+      } else {
+        window.MockupSystem.openPopup();
       }
     }
 

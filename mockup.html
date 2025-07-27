@@ -1,0 +1,908 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NurseBuddy | ระบบจำลองข้อมูล</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Sarabun', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .mockup-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 25px;
+      padding: 30px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      color: #64748b;
+      font-size: 18px;
+    }
+
+    .mockup-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .mockup-card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      border: 2px solid #e5e7eb;
+      transition: all 0.3s ease;
+    }
+
+    .mockup-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2);
+      border-color: #8b5cf6;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+      color: white;
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    .mockup-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .control-label {
+      font-weight: 600;
+      color: #374151;
+      font-size: 14px;
+    }
+
+    .control-input {
+      padding: 12px 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .control-input:focus {
+      border-color: #8b5cf6;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+    }
+
+    .control-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .control-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 14px;
+    }
+
+    .control-btn.primary {
+      background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+      color: white;
+    }
+
+    .control-btn.secondary {
+      background: linear-gradient(135deg, #64748b, #475569);
+      color: white;
+    }
+
+    .control-btn.success {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+    }
+
+    .control-btn.warning {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;
+    }
+
+    .control-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .mock-display {
+      background: #f8fafc;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 15px;
+      border: 2px dashed #cbd5e1;
+    }
+
+    .mock-data {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .data-item {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px solid #e5e7eb;
+    }
+
+    .data-label {
+      font-size: 12px;
+      color: #64748b;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .data-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    .data-unit {
+      font-size: 12px;
+      color: #8b5cf6;
+      font-weight: 600;
+    }
+
+    .floating-controls {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      display: flex;
+      gap: 10px;
+    }
+
+    .float-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .float-btn.home {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+    }
+
+    .float-btn.dashboard {
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      color: white;
+    }
+
+    .float-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .status-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 8px;
+      animation: pulse 2s infinite;
+    }
+
+    .status-active {
+      background: #10b981;
+    }
+
+    .status-warning {
+      background: #f59e0b;
+    }
+
+    .status-critical {
+      background: #ef4444;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    @media (max-width: 768px) {
+      .mockup-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .control-buttons {
+        flex-direction: column;
+      }
+      
+      .floating-controls {
+        bottom: 20px;
+        top: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="floating-controls">
+    <button class="float-btn home" onclick="window.location.href='index.html'" title="กลับหน้าหลัก">
+      🏠
+    </button>
+    <button class="float-btn dashboard" onclick="window.location.href='dashboard.html'" title="ไป Dashboard">
+      📊
+    </button>
+  </div>
+
+  <div class="mockup-container">
+    <div class="header">
+      <h1>🎭 ระบบจำลองข้อมูลน้ำเกลือ</h1>
+      <p>Mock-up System สำหรับทดสอบและจำลองข้อมูล NurseBuddy</p>
+    </div>
+
+    <div class="mockup-grid">
+      <!-- IV Flow Simulator -->
+      <div class="mockup-card">
+        <div class="card-header">
+          <div class="card-icon">💧</div>
+          <div class="card-title">จำลองการไหลน้ำเกลือ</div>
+        </div>
+        
+        <div class="mockup-controls">
+          <div class="control-group">
+            <label class="control-label">เลือกเตียง</label>
+            <select class="control-input" id="mockBedSelect">
+              <option value="1">เตียง 1</option>
+              <option value="2">เตียง 2</option>
+              <option value="3">เตียง 3</option>
+              <option value="4">เตียง 4</option>
+              <option value="5">เตียง 5</option>
+              <option value="6">เตียง 6</option>
+              <option value="7">เตียง 7</option>
+              <option value="8">เตียง 8</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label class="control-label">อัตราการไหล (ดรอป/นาที)</label>
+            <input type="number" class="control-input" id="mockFlowRate" value="20" min="0" max="100">
+          </div>
+
+          <div class="control-group">
+            <label class="control-label">ปริมาณคงเหลือ (mL)</label>
+            <input type="number" class="control-input" id="mockVolume" value="500" min="0" max="1000">
+          </div>
+
+          <div class="control-buttons">
+            <button class="control-btn primary" onclick="startMockFlow()">
+              🚀 เริ่มจำลอง
+            </button>
+            <button class="control-btn warning" onclick="pauseMockFlow()">
+              ⏸️ หยุดชั่วคราว
+            </button>
+            <button class="control-btn secondary" onclick="stopMockFlow()">
+              ⏹️ หยุด
+            </button>
+          </div>
+        </div>
+
+        <div class="mock-display" id="flowDisplay">
+          <div style="text-align: center; color: #64748b;">
+            <span class="status-indicator status-active"></span>
+            <strong>พร้อมจำลองข้อมูล</strong>
+          </div>
+          
+          <div class="mock-data" id="flowData" style="display: none;">
+            <div class="data-item">
+              <div class="data-label">อัตราปัจจุบัน</div>
+              <div class="data-value" id="currentRate">20</div>
+              <div class="data-unit">ดรอป/นาที</div>
+            </div>
+            <div class="data-item">
+              <div class="data-label">ปริมาณคงเหลือ</div>
+              <div class="data-value" id="remainingVolume">500</div>
+              <div class="data-unit">mL</div>
+            </div>
+            <div class="data-item">
+              <div class="data-label">เวลาที่เหลือ</div>
+              <div class="data-value" id="timeRemaining">--</div>
+              <div class="data-unit">ชั่วโมง</div>
+            </div>
+            <div class="data-item">
+              <div class="data-label">สถานะ</div>
+              <div class="data-value" id="flowStatus">ปกติ</div>
+              <div class="data-unit">--</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Patient Data Generator -->
+      <div class="mockup-card">
+        <div class="card-header">
+          <div class="card-icon">👤</div>
+          <div class="card-title">สร้างข้อมูลผู้ป่วย</div>
+        </div>
+        
+        <div class="mockup-controls">
+          <div class="control-buttons">
+            <button class="control-btn success" onclick="generateRandomPatient()">
+              🎲 สร้างผู้ป่วยสุ่ม
+            </button>
+            <button class="control-btn primary" onclick="generateVitalSigns()">
+              💓 สร้าง Vital Signs
+            </button>
+            <button class="control-btn warning" onclick="generateIOData()">
+              📊 สร้างข้อมูล I/O
+            </button>
+          </div>
+        </div>
+
+        <div class="mock-display" id="patientDisplay">
+          <div style="text-align: center; color: #64748b;">
+            <strong>กดปุ่มเพื่อสร้างข้อมูลจำลอง</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alert Simulator -->
+      <div class="mockup-card">
+        <div class="card-header">
+          <div class="card-icon">🚨</div>
+          <div class="card-title">จำลองการแจ้งเตือน</div>
+        </div>
+        
+        <div class="mockup-controls">
+          <div class="control-group">
+            <label class="control-label">ประเภทการแจ้งเตือน</label>
+            <select class="control-input" id="alertType">
+              <option value="normal">ปกติ</option>
+              <option value="warning">เตือน</option>
+              <option value="critical">ฉุกเฉิน</option>
+            </select>
+          </div>
+
+          <div class="control-buttons">
+            <button class="control-btn success" onclick="triggerMockAlert('normal')">
+              💚 แจ้งเตือนปกติ
+            </button>
+            <button class="control-btn warning" onclick="triggerMockAlert('warning')">
+              💛 แจ้งเตือนเตือน
+            </button>
+            <button class="control-btn primary" onclick="triggerMockAlert('critical')" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+              ❤️ แจ้งเตือนฉุกเฉิน
+            </button>
+          </div>
+        </div>
+
+        <div class="mock-display" id="alertDisplay">
+          <div id="alertLog" style="max-height: 200px; overflow-y: auto;">
+            <div style="text-align: center; color: #64748b;">
+              <strong>ยังไม่มีการแจ้งเตือน</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- System Control -->
+      <div class="mockup-card">
+        <div class="card-header">
+          <div class="card-icon">⚙️</div>
+          <div class="card-title">ควบคุมระบบ</div>
+        </div>
+        
+        <div class="mockup-controls">
+          <div class="control-buttons">
+            <button class="control-btn success" onclick="saveAllMockData()">
+              💾 บันทึกข้อมูลจำลอง
+            </button>
+            <button class="control-btn warning" onclick="clearAllMockData()">
+              🗑️ ล้างข้อมูลทั้งหมด
+            </button>
+            <button class="control-btn secondary" onclick="exportMockData()">
+              📤 Export ข้อมูล
+            </button>
+          </div>
+        </div>
+
+        <div class="mock-display">
+          <div class="mock-data">
+            <div class="data-item">
+              <div class="data-label">เตียงที่ใช้งาน</div>
+              <div class="data-value" id="activeBeds">0</div>
+              <div class="data-unit">เตียง</div>
+            </div>
+            <div class="data-item">
+              <div class="data-label">การแจ้งเตือน</div>
+              <div class="data-value" id="totalAlerts">0</div>
+              <div class="data-unit">รายการ</div>
+            </div>
+            <div class="data-item">
+              <div class="data-label">ข้อมูลจำลอง</div>
+              <div class="data-value" id="mockDataCount">0</div>
+              <div class="data-unit">รายการ</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="System/data-manager.js"></script>
+  <script>
+    let mockFlowInterval = null;
+    let mockAlertCount = 0;
+    let mockDataCount = 0;
+
+    // ตรวจสอบสิทธิ์การเข้าใช้
+    function checkMockupAccess() {
+      const currentUser = JSON.parse(sessionStorage.getItem('currentUser') || 'null');
+      if (!currentUser || currentUser.role !== 'mockup') {
+        alert('⚠️ คุณไม่มีสิทธิ์เข้าใช้งานระบบ Mock-up');
+        window.location.href = 'index.html';
+        return false;
+      }
+      return true;
+    }
+
+    // เริ่มจำลองการไหล
+    function startMockFlow() {
+      if (!checkMockupAccess()) return;
+
+      const bedId = document.getElementById('mockBedSelect').value;
+      const flowRate = parseInt(document.getElementById('mockFlowRate').value);
+      const volume = parseInt(document.getElementById('mockVolume').value);
+
+      if (mockFlowInterval) {
+        clearInterval(mockFlowInterval);
+      }
+
+      document.getElementById('flowData').style.display = 'grid';
+      let currentVolume = volume;
+      let currentFlow = flowRate;
+
+      mockFlowInterval = setInterval(() => {
+        // จำลองการเปลี่ยนแปลงอัตราการไหล
+        const variance = (Math.random() - 0.5) * 4; // ±2 ดรอป
+        currentFlow = Math.max(0, flowRate + variance);
+        
+        // คำนวณปริมาณที่ลดลง
+        const volumeDecrease = currentFlow * 60 / 20 / 60; // แปลงเป็น mL/วินาที
+        currentVolume = Math.max(0, currentVolume - volumeDecrease);
+
+        // อัพเดทการแสดงผล
+        document.getElementById('currentRate').textContent = currentFlow.toFixed(1);
+        document.getElementById('remainingVolume').textContent = Math.round(currentVolume);
+        
+        // คำนวณเวลาที่เหลือ
+        if (currentFlow > 0) {
+          const timeRemaining = currentVolume / (currentFlow * 60 / 20 / 60);
+          const hours = Math.floor(timeRemaining / 3600);
+          const minutes = Math.floor((timeRemaining % 3600) / 60);
+          document.getElementById('timeRemaining').textContent = `${hours}:${minutes.toString().padStart(2, '0')}`;
+        }
+
+        // อัพเดทสถานะ
+        let status = 'ปกติ';
+        let statusClass = 'status-active';
+        
+        if (Math.abs(currentFlow - flowRate) > 3) {
+          status = 'ผิดปกติ';
+          statusClass = 'status-warning';
+        }
+        
+        if (currentVolume < 50) {
+          status = 'ใกล้หมด';
+          statusClass = 'status-critical';
+        }
+
+        if (currentVolume <= 0) {
+          status = 'หมดแล้ว';
+          statusClass = 'status-critical';
+          stopMockFlow();
+        }
+
+        document.getElementById('flowStatus').textContent = status;
+
+        // บันทึกข้อมูลลง localStorage
+        const mockData = {
+          bedId: bedId,
+          currentFlow: currentFlow,
+          remainingVolume: currentVolume,
+          status: status,
+          timestamp: new Date().toISOString()
+        };
+
+        localStorage.setItem(`mock_flow_bed_${bedId}`, JSON.stringify(mockData));
+      }, 1000);
+
+      updateSystemStats();
+    }
+
+    function pauseMockFlow() {
+      if (mockFlowInterval) {
+        clearInterval(mockFlowInterval);
+        mockFlowInterval = null;
+      }
+    }
+
+    function stopMockFlow() {
+      if (mockFlowInterval) {
+        clearInterval(mockFlowInterval);
+        mockFlowInterval = null;
+      }
+      
+      document.getElementById('flowData').style.display = 'none';
+      document.getElementById('flowDisplay').innerHTML = `
+        <div style="text-align: center; color: #64748b;">
+          <span class="status-indicator status-active"></span>
+          <strong>หยุดการจำลองแล้ว</strong>
+        </div>
+      `;
+    }
+
+    // สร้างผู้ป่วยสุ่ม
+    function generateRandomPatient() {
+      if (!checkMockupAccess()) return;
+
+      const names = ['สมชาย ใจดี', 'สมหญิง สวยงาม', 'นายหนึ่ง ดีมาก', 'นางสอง งามดี', 'คุณสาม ยอดเยี่ยม'];
+      const medications = ['Normal Saline', 'Ringer Lactate', 'Dextrose 5%', 'Dextrose 10%'];
+      const volumes = [250, 500, 1000];
+      
+      const patientData = {
+        patient_id: names[Math.floor(Math.random() * names.length)],
+        medication: medications[Math.floor(Math.random() * medications.length)],
+        volume: volumes[Math.floor(Math.random() * volumes.length)],
+        rate: Math.floor(Math.random() * 50) + 10,
+        timestamp: new Date().toISOString()
+      };
+
+      const bedId = document.getElementById('mockBedSelect').value;
+      dataManager.savePatient(bedId, patientData);
+
+      document.getElementById('patientDisplay').innerHTML = `
+        <div class="mock-data">
+          <div class="data-item">
+            <div class="data-label">ชื่อผู้ป่วย</div>
+            <div class="data-value" style="font-size: 16px;">${patientData.patient_id}</div>
+          </div>
+          <div class="data-item">
+            <div class="data-label">ยา</div>
+            <div class="data-value" style="font-size: 14px;">${patientData.medication}</div>
+          </div>
+          <div class="data-item">
+            <div class="data-label">ปริมาณ</div>
+            <div class="data-value">${patientData.volume}</div>
+            <div class="data-unit">mL</div>
+          </div>
+          <div class="data-item">
+            <div class="data-label">อัตรา</div>
+            <div class="data-value">${patientData.rate}</div>
+            <div class="data-unit">ดรอป/นาที</div>
+          </div>
+        </div>
+      `;
+
+      mockDataCount++;
+      updateSystemStats();
+    }
+
+    // สร้าง Vital Signs
+    function generateVitalSigns() {
+      if (!checkMockupAccess()) return;
+
+      const vitalsData = {
+        systolic: Math.floor(Math.random() * 40) + 100,
+        diastolic: Math.floor(Math.random() * 20) + 60,
+        heartRate: Math.floor(Math.random() * 40) + 60,
+        temperature: (Math.random() * 2 + 36).toFixed(1),
+        oxygen: Math.floor(Math.random() * 5) + 95,
+        timestamp: new Date().toISOString()
+      };
+
+      const bedId = document.getElementById('mockBedSelect').value;
+      dataManager.saveVitals(bedId, vitalsData);
+
+      document.getElementById('patientDisplay').innerHTML = `
+        <div class="mock-data">
+          <div class="data-item">
+            <div class="data-label">BP</div>
+            <div class="data-value" style="font-size: 16px;">${vitalsData.systolic}/${vitalsData.diastolic}</div>
+          </div>
+          <div class="data-item">
+            <div class="data-label">HR</div>
+            <div class="data-value">${vitalsData.heartRate}</div>
+            <div class="data-unit">bpm</div>
+          </div>
+          <div class="data-item">
+            <div class="data-label">Temp</div>
+            <div class="data-value">${vitalsData.temperature}</div>
+            <div class="data-unit">°C</div>
+          </div>
+          <div class="data-item">
+            <div class="data-label">O2 Sat</div>
+            <div class="data-value">${vitalsData.oxygen}</div>
+            <div class="data-unit">%</div>
+          </div>
+        </div>
+      `;
+
+      mockDataCount++;
+      updateSystemStats();
+    }
+
+    // สร้างข้อมูล I/O
+    function generateIOData() {
+      if (!checkMockupAccess()) return;
+
+      const ioData = {
+        totalIn: Math.floor(Math.random() * 1000) + 500,
+        totalOut: Math.floor(Math.random() * 800) + 400,
+        balance: 0,
+        timestamp: new Date().toISOString()
+      };
+
+      ioData.balance = ioData.totalIn - ioData.totalOut;
+
+      const bedId = document.getElementById('mockBedSelect').value;
+      dataManager.saveIORecord(bedId, ioData);
+
+      document.getElementById('patientDisplay').innerHTML = `
+        <div class="mock-data">
+          <div class="data-item">
+            <div class="data-label">Input</div>
+            <div class="data-value">${ioData.totalIn}</div>
+            <div class="data-unit">mL</div>
+          </div>
+          <div class="data-item">
+            <div class="data-label">Output</div>
+            <div class="data-value">${ioData.totalOut}</div>
+            <div class="data-unit">mL</div>
+          </div>
+          <div class="data-item">
+            <div class="data-label">Balance</div>
+            <div class="data-value" style="color: ${ioData.balance >= 0 ? '#10b981' : '#ef4444'}">
+              ${ioData.balance > 0 ? '+' : ''}${ioData.balance}
+            </div>
+            <div class="data-unit">mL</div>
+          </div>
+        </div>
+      `;
+
+      mockDataCount++;
+      updateSystemStats();
+    }
+
+    // จำลองการแจ้งเตือน
+    function triggerMockAlert(type) {
+      if (!checkMockupAccess()) return;
+
+      const alertMessages = {
+        normal: ['ตรวจสอบน้ำเกลือเตียง', 'ปรับอัตราการไหล', 'บันทึกข้อมูล Vital Signs'],
+        warning: ['อัตราการไหลผิดปกติ', 'ปริมาณน้ำเกลือเหลือน้อย', 'ตรวจสอบสายยาง'],
+        critical: ['น้ำเกลือหมด - เปลี่ยนทันที!', 'อัตราการไหลหยุด!', 'ระบบเตือนฉุกเฉิน!']
+      };
+
+      const colors = {
+        normal: '#10b981',
+        warning: '#f59e0b',
+        critical: '#ef4444'
+      };
+
+      const message = alertMessages[type][Math.floor(Math.random() * alertMessages[type].length)];
+      const bedId = document.getElementById('mockBedSelect').value;
+
+      const alertData = {
+        id: Date.now().toString(),
+        type: type,
+        message: message,
+        bedId: bedId,
+        timestamp: new Date().toLocaleString('th-TH')
+      };
+
+      // บันทึกการแจ้งเตือน
+      dataManager.saveAlert(bedId, alertData);
+
+      // แสดงในหน้าจอ
+      const alertLog = document.getElementById('alertLog');
+      if (mockAlertCount === 0) {
+        alertLog.innerHTML = '';
+      }
+
+      const alertElement = document.createElement('div');
+      alertElement.style.cssText = `
+        padding: 10px;
+        margin: 5px 0;
+        border-radius: 8px;
+        border-left: 4px solid ${colors[type]};
+        background: ${colors[type]}15;
+        font-size: 14px;
+      `;
+      
+      alertElement.innerHTML = `
+        <div style="font-weight: 600; color: ${colors[type]};">
+          ${type.toUpperCase()} - เตียง ${bedId}
+        </div>
+        <div style="color: #374151; margin-top: 5px;">${message}</div>
+        <div style="color: #64748b; font-size: 12px; margin-top: 5px;">${alertData.timestamp}</div>
+      `;
+
+      alertLog.insertBefore(alertElement, alertLog.firstChild);
+
+      mockAlertCount++;
+      updateSystemStats();
+
+      // เลื่อนการแจ้งเตือนเก่าออก
+      if (alertLog.children.length > 5) {
+        alertLog.removeChild(alertLog.lastChild);
+      }
+    }
+
+    // อัพเดทสถิติระบบ
+    function updateSystemStats() {
+      let activeBeds = 0;
+      for (let i = 1; i <= 8; i++) {
+        if (dataManager.getPatient(i)) {
+          activeBeds++;
+        }
+      }
+
+      document.getElementById('activeBeds').textContent = activeBeds;
+      document.getElementById('totalAlerts').textContent = mockAlertCount;
+      document.getElementById('mockDataCount').textContent = mockDataCount;
+    }
+
+    // บันทึกข้อมูลจำลองทั้งหมด
+    function saveAllMockData() {
+      const mockSummary = {
+        activeBeds: parseInt(document.getElementById('activeBeds').textContent),
+        totalAlerts: mockAlertCount,
+        mockDataCount: mockDataCount,
+        timestamp: new Date().toISOString(),
+        savedBy: 'Mock-up System'
+      };
+
+      localStorage.setItem('mock_summary', JSON.stringify(mockSummary));
+      alert('✅ บันทึกข้อมูลจำลองทั้งหมดเรียบร้อยแล้ว');
+    }
+
+    // ล้างข้อมูลจำลองทั้งหมด
+    function clearAllMockData() {
+      if (confirm('⚠️ คุณต้องการล้างข้อมูลจำลองทั้งหมดหรือไม่?')) {
+        stopMockFlow();
+        
+        for (let i = 1; i <= 8; i++) {
+          dataManager.clearBedData(i);
+          localStorage.removeItem(`mock_flow_bed_${i}`);
+        }
+
+        localStorage.removeItem('mock_summary');
+        
+        mockAlertCount = 0;
+        mockDataCount = 0;
+        
+        document.getElementById('alertLog').innerHTML = `
+          <div style="text-align: center; color: #64748b;">
+            <strong>ล้างข้อมูลแล้ว</strong>
+          </div>
+        `;
+        
+        document.getElementById('patientDisplay').innerHTML = `
+          <div style="text-align: center; color: #64748b;">
+            <strong>กดปุ่มเพื่อสร้างข้อมูลจำลอง</strong>
+          </div>
+        `;
+
+        updateSystemStats();
+        alert('✅ ล้างข้อมูลจำลองทั้งหมดเรียบร้อยแล้ว');
+      }
+    }
+
+    // Export ข้อมูล
+    function exportMockData() {
+      const exportData = {
+        summary: JSON.parse(localStorage.getItem('mock_summary') || '{}'),
+        bedData: {},
+        alerts: mockAlertCount,
+        exportedAt: new Date().toISOString()
+      };
+
+      for (let i = 1; i <= 8; i++) {
+        exportData.bedData[`bed_${i}`] = dataManager.exportBedData(i);
+      }
+
+      const dataStr = JSON.stringify(exportData, null, 2);
+      const dataBlob = new Blob([dataStr], {type: 'application/json'});
+      const url = URL.createObjectURL(dataBlob);
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `nursebuddy_mockup_${new Date().toISOString().split('T')[0]}.json`;
+      link.click();
+
+      URL.revokeObjectURL(url);
+      alert('📤 Export ข้อมูลจำลองเรียบร้อยแล้ว');
+    }
+
+    // เริ่มต้นระบบ
+    document.addEventListener('DOMContentLoaded', function() {
+      if (!checkMockupAccess()) return;
+      
+      updateSystemStats();
+      
+      // โหลดข้อมูลจำลองที่บันทึกไว้
+      const mockSummary = JSON.parse(localStorage.getItem('mock_summary') || 'null');
+      if (mockSummary) {
+        mockAlertCount = mockSummary.totalAlerts || 0;
+        mockDataCount = mockSummary.mockDataCount || 0;
+        updateSystemStats();
+      }
+    });
+  </script>
+</body>
+</html>
